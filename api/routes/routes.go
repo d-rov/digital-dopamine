@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"digital-dopamine/handlers"
+	"github.com/d-rov/digital-dopamine/api/handlers"
 
 	"github.com/labstack/echo/v4"
 )
