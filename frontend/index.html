@@ -1,0 +1,17 @@
+<!-- frontend/templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Digital Dopamine Dashboard</title>
+  <script src="/static/js/htmx.min.js"></script>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <h1>Time Tracker Dashboard</h1>
+
+  <div hx-get="/api/visits" hx-trigger="load" hx-swap="innerHTML">
+    Loading visits...
+  </div>
+</body>
+</html>
