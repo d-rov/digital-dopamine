@@ -1,4 +1,4 @@
-import { LogEntry } from "../types";
+import type { LogEntry } from "../types";
 
 export class TimeTracker {
   url: string;

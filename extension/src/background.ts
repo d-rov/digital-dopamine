@@ -1,5 +1,5 @@
-import { postLogEntry } from "./api";
-import { TimeTracker } from "./utils/timeTracker";
+import { postLogEntry } from "./api.js";
+import { TimeTracker } from "./utils/timeTracker.js";
 
 let currTab: number = 0;
 const trackerMap = new Map<number, TimeTracker>();

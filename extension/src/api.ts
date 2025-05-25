@@ -1,4 +1,4 @@
-import { LogEntry } from "./types";
+import type { LogEntry } from "./types";
 import { API_BASE_URL } from "./config.js";
 
 export const postLogEntry = async (data: LogEntry) => {
