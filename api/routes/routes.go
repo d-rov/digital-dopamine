@@ -8,4 +8,7 @@ import (
 
 func RegisterRoutes(e *echo.Echo) {
 	e.POST("/log", handlers.LogSite)
+	// e.POST /classify
+	// e.GET /summary (?period=day|week|month) query params
+	// e.GET /categories
 }

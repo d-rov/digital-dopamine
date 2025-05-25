@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 type LogEntry struct {
 	gorm.Model
-	Domain    string `json:"domain"`
+	URL       string `json:"domain"`
 	Timestamp string `json:"timestamp"`
 	Duration  int    `json:"duration"`
 }
