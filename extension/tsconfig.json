@@ -109,9 +109,9 @@
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true,                                /* Skip type checking all .d.ts files. */
-    "outDir": "./chrome",
-    "rootDir": "./",
+    "outDir": "dist",
+    "rootDir": "src",
     "moduleResolution": "Node"
   },
-  "include": ["./**/*.ts"]
+  "include": ["src"]
 }

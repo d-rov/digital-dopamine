@@ -1,8 +1,8 @@
 import { postLogEntry } from "./api";
 import { TimeTracker } from "./utils/timeTracker";
 
-let currTab = 0;
-const trackerMap = new Map();
+let currTab: number = 0;
+const trackerMap = new Map<number, TimeTracker>();
 
 // onActivated needs to stop time tracking for previous tabId if there is one
 // creates a new time tracker if one did not previously exist and then (re)start time tracking for new active tab
