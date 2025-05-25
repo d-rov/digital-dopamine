@@ -1,6 +1,6 @@
-### Digital Dopamine
+# Digital Dopamine
 
-productivity tracker
+### productivity tracker
 
 Tracks how much time is spent on unproductive and time wasting sites
 Utilizes a chrome extension for data collection
