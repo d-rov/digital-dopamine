@@ -13,7 +13,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     console.log(tab.id);
     // check if currTab does != tab.id and stop previous time tracker
     // set new currTab to tab.id
-    if (currTab && currTab !== tab.id) {
+    if (currTab != 0 && currTab !== tab.id) {
       const tracker = trackerMap.get(currTab);
       if (!tracker) return "TimeTracker object not found";
       const tabData = tracker.stop();
@@ -21,8 +21,11 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
       console.log(tabData);
       const retVal = postLogEntry(tabData);
       // lets do a little error checking with retVal
-      currTab = tab.id;
     }
+
+    currTab = tab.id;
+    console.log(`Current tab id: ${currTab}`); // TESTING
+
     if (trackerMap.has(tab.id)) {
       const tracker = trackerMap.get(tab.id);
       if (!tracker) return "TimeTracker object not found";
