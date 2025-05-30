@@ -1,6 +1,8 @@
 package database
 
 import (
+	"log"
+
 	"github.com/d-rov/digital-dopamine/api/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -15,4 +17,5 @@ func InitDB() {
 	}
 	db.AutoMigrate(&models.LogEntry{})
 	DB = db
+	log.Println("db.go: database initialized") // TESTING
 }
