@@ -1,2 +1,7 @@
+### frontend ###
+### api ###
 api/dopamine.db
-extension/dist
+api/log.txt
+### extension ###
+extension/dist/
+extension/node_modules/

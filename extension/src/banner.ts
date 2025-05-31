@@ -1,4 +1,6 @@
-function injectTopBanner() {
+import { postSiteClassification } from "./api";
+
+async function injectTopBanner() {
   if (document.getElementById("classificationBanner")) return;
 
   const banner = document.createElement("div");
@@ -44,14 +46,20 @@ function injectTopBanner() {
   distractionBtn.innerText = "Distraction";
   distractionBtn.style.cssText = productiveBtn.style.cssText;
 
-  productiveBtn.onclick = () => {
+  productiveBtn.onclick = async () => {
     console.log("productive");
-    // make a call to backend to categorize site
+    await postSiteClassification({
+      url: window.location.hostname,
+      category: "productive",
+    });
     banner.remove();
   };
-  distractionBtn.onclick = () => {
+  distractionBtn.onclick = async () => {
     console.log("distraction");
-    // make a call to backend to categorize site
+    await postSiteClassification({
+      url: window.location.hostname,
+      category: "distraction",
+    });
     banner.remove();
   };
 

@@ -113,5 +113,5 @@
     "rootDir": "src",
     "moduleResolution": "Node"
   },
-  "include": ["src"]
+  "include": ["src/**/*"]
 }
