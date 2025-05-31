@@ -1,6 +1,4 @@
-import { postSiteClassification } from "./api";
-
-async function injectTopBanner() {
+function injectTopBanner() {
   if (document.getElementById("classificationBanner")) return;
 
   const banner = document.createElement("div");
@@ -46,20 +44,28 @@ async function injectTopBanner() {
   distractionBtn.innerText = "Distraction";
   distractionBtn.style.cssText = productiveBtn.style.cssText;
 
-  productiveBtn.onclick = async () => {
+  productiveBtn.onclick = () => {
     console.log("productive");
-    await postSiteClassification({
-      url: window.location.hostname,
-      category: "productive",
+    chrome.runtime.sendMessage({
+      type: "classifySite",
+      payload: {
+        url: window.location.hostname,
+        category: "productive",
+      },
     });
+    console.log("message sent");
     banner.remove();
   };
-  distractionBtn.onclick = async () => {
+  distractionBtn.onclick = () => {
     console.log("distraction");
-    await postSiteClassification({
-      url: window.location.hostname,
-      category: "distraction",
+    chrome.runtime.sendMessage({
+      type: "classifySite",
+      payload: {
+        url: window.location.hostname,
+        category: "distraction",
+      },
     });
+    console.log("message sent");
     banner.remove();
   };
 

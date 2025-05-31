@@ -1,4 +1,8 @@
-import { getSiteClassification, postLogEntry } from "./api.js";
+import {
+  getSiteClassification,
+  postLogEntry,
+  postSiteClassification,
+} from "./api.js";
 import { TimeTracker } from "./utils/timeTracker.js";
 
 let currUrl: string = "";
@@ -52,5 +56,13 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   console.log(`ChangeInfo: ${changeInfo}`); // TESTING
   if (changeInfo.url) {
     console.log(changeInfo.url); // TESTING
+  }
+});
+
+chrome.runtime.onMessage.addListener((message) => {
+  console.log("Message received in background");
+  if (message.type === "classifySite") {
+    const retVal = postSiteClassification(message.payload);
+    console.log("postSiteClassification retVal: ", retVal);
   }
 });

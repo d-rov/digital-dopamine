@@ -10,6 +10,7 @@ import (
 )
 
 func ClassifySite(c echo.Context) error {
+	log.Println("call made to ClassifySite")
 	var classification models.Classification
 	if err := c.Bind(&classification); err != nil {
 		log.Println("classify.go: error binding classification", err) // TESTING

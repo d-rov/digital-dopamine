@@ -22,6 +22,7 @@ func main() {
 	log.Println("main.go: log start")
 
 	e := echo.New()
+
 	database.InitDB()
 	routes.RegisterRoutes(e)
 
