@@ -16,6 +16,7 @@ func InitDB() {
 		panic("Failure to connect to DB...")
 	}
 	db.AutoMigrate(&models.LogEntry{})
+	db.AutoMigrate(&models.Classification{})
 	DB = db
 	log.Println("db.go: database initialized") // TESTING
 }

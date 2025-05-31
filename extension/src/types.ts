@@ -3,3 +3,8 @@ export interface LogEntry {
   timestamp: number;
   duration: number;
 }
+
+export interface Classification {
+  url: string;
+  category: string;
+}

@@ -36,8 +36,9 @@ func DataSummary(c echo.Context) error {
 	}
 	result := database.DB.Where("timestamp >= ?", periodParam).Find(&entries)
 	if result.Error != nil {
-		log.Fatal(result.Error)
+		log.Println("DataSummary, Error: Database error")
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Database error"})
 	}
-	log.Println("DataSummary, Entries: ", entries) // TESTING, might be really big
+	log.Println("DataSummary, Entries: ", len(entries)) // TESTING, might be really big
 	return c.JSON(http.StatusOK, entries)
 }
