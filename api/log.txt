@@ -14,3 +14,24 @@
 2025/05/30 22:09:46 SiteCategory, Error: No database entry found
 2025/05/30 22:09:46 log.go: endpoint LogSite called
 2025/05/30 22:09:46 LogSite, Entry:  {{0 0001-01-01 00:00:00 +0000 UTC 0001-01-01 00:00:00 +0000 UTC {0001-01-01 00:00:00 +0000 UTC false}} extensions 1748664576465 9589}
+2025/05/30 22:11:41 SiteCategory, Error: No database entry found
+2025/05/30 22:11:45 SiteCategory, Error: No database entry found
+2025/05/30 22:11:45 log.go: endpoint LogSite called
+2025/05/30 22:11:45 LogSite, Entry:  {{0 0001-01-01 00:00:00 +0000 UTC 0001-01-01 00:00:00 +0000 UTC {0001-01-01 00:00:00 +0000 UTC false}} extensions 1748664701278 3849}
+2025/05/30 22:16:54 SiteCategory, Error: No database entry found
+2025/05/30 22:16:59 SiteCategory, Error: No database entry found
+2025/05/30 22:16:59 SiteCategory, Error: No database entry found
+2025/05/30 22:16:59 log.go: endpoint LogSite called
+2025/05/30 22:16:59 LogSite, Entry:  {{0 0001-01-01 00:00:00 +0000 UTC 0001-01-01 00:00:00 +0000 UTC {0001-01-01 00:00:00 +0000 UTC false}} developer.mozilla.org 1748665019381 591}
+2025/05/30 22:17:51 SiteCategory, Error: No database entry found
+2025/05/30 22:19:36 SiteCategory, Error: No database entry found
+2025/05/30 22:19:39 SiteCategory, Error: No database entry found
+2025/05/30 22:20:29 SiteCategory, Error: No database entry found
+2025/05/30 22:20:29 log.go: endpoint LogSite called
+2025/05/30 22:20:29 LogSite, Entry:  {{0 0001-01-01 00:00:00 +0000 UTC 0001-01-01 00:00:00 +0000 UTC {0001-01-01 00:00:00 +0000 UTC false}} developer.mozilla.org 1748665179802 49410}
+2025/05/30 22:20:29 SiteCategory, Error: No database entry found
+2025/05/30 22:20:29 log.go: endpoint LogSite called
+2025/05/30 22:20:29 LogSite, Entry:  {{0 0001-01-01 00:00:00 +0000 UTC 0001-01-01 00:00:00 +0000 UTC {0001-01-01 00:00:00 +0000 UTC false}} extensions 1748665229230 706}
+2025/05/30 22:20:33 SiteCategory, Error: No database entry found
+2025/05/30 22:20:33 log.go: endpoint LogSite called
+2025/05/30 22:20:33 LogSite, Entry:  {{0 0001-01-01 00:00:00 +0000 UTC 0001-01-01 00:00:00 +0000 UTC {0001-01-01 00:00:00 +0000 UTC false}} developer.mozilla.org 1748665229948 3644}
