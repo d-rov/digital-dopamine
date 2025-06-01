@@ -10,11 +10,14 @@ import (
 )
 
 func SiteCategories(c echo.Context) error {
+	log.Println("SiteCategories endpoint called") // TESTING
 	var categories []models.Classification
-	result := database.DB.Find(categories)
+	result := database.DB.Find(&categories)
+	log.Println("SiteCategories, database query made") // TESTING
 	if result.Error != nil {
 		log.Println("SiteCategories, Error: Database error")
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Database error"})
 	}
+	log.Println("SiteCategories, Categories: ", categories)
 	return c.JSON(http.StatusOK, categories)
 }

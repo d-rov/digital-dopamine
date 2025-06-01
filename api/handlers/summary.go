@@ -12,13 +12,10 @@ import (
 
 func DataSummary(c echo.Context) error {
 	now := time.Now()
-	// today := time.Now().Format("2006-01-02")
 	startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location()).UnixMilli()
 	// want to add a start of week as well
-	startOfWeek := time.Now().UnixMilli() // TODO: Placeholder
+	startOfWeek := time.Now().UnixMilli() // TODO: Placeholder for start of week
 	startOfMonth := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, now.Location()).UnixMilli()
-	log.Println("DataSummary, Start of Today: ", startOfDay)   // TESTING
-	log.Println("DataSummary, Start of Month: ", startOfMonth) // TESTING
 	// [day|week|month]
 	period := c.QueryParam("period")
 	var entries []models.LogEntry
@@ -39,6 +36,6 @@ func DataSummary(c echo.Context) error {
 		log.Println("DataSummary, Error: Database error")
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Database error"})
 	}
-	log.Println("DataSummary, Entries: ", len(entries)) // TESTING, might be really big
+	log.Println("DataSummary, Entries: ", len(entries))
 	return c.JSON(http.StatusOK, entries)
 }

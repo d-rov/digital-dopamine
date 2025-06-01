@@ -17,5 +17,5 @@ func RegisterRoutes(e *echo.Echo) {
 	e.GET("/category", handlers.SiteCategory)
 	e.GET("/categories", handlers.SiteCategories)
 
-	log.Println("routes registered...") // TESTING
+	log.Println("routes registered...")
 }

@@ -5,6 +5,8 @@ import {
 } from "./api.js";
 import { TimeTracker } from "./utils/timeTracker.js";
 
+// TODO: need to ignore certain URLs such as localhost, newtab, chrome://
+
 let currUrl: string = "";
 const trackerMap = new Map<string, TimeTracker>();
 
@@ -14,7 +16,16 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   try {
     const tab = await chrome.tabs.get(activeInfo.tabId);
     if (!tab || !tab.url || !tab.id) return;
-    // need to sanitize for restricted URLs such as chrome://
+    if (
+      tab.url.startsWith("chrome") ||
+      tab.url.includes("localhost") ||
+      tab.url.includes("127.0.0.1")
+    ) {
+      return;
+    }
+
+    console.log(tab.url);
+
     const parsed = new URL(tab.url);
     const hostUrl = parsed.host;
 

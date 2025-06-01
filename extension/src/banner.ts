@@ -26,7 +26,7 @@ function injectTopBanner() {
   const buttonsContainer = document.createElement("div");
   buttonsContainer.style.display = "flex";
   buttonsContainer.style.gap = "8px";
-  buttonsContainer.style.marginRight = "10px";
+  buttonsContainer.style.marginRight = "22px";
 
   const productiveBtn = document.createElement("button");
   productiveBtn.innerText = "Productive";
