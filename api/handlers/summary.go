@@ -7,6 +7,7 @@ import (
 
 	"github.com/d-rov/digital-dopamine/api/database"
 	"github.com/d-rov/digital-dopamine/api/models"
+	"github.com/d-rov/digital-dopamine/api/utils"
 	"github.com/labstack/echo/v4"
 )
 
@@ -37,5 +38,6 @@ func DataSummary(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Database error"})
 	}
 	log.Println("DataSummary, Entries: ", len(entries))
-	return c.JSON(http.StatusOK, entries)
+	entriesParsed := utils.ParseVisits(entries)
+	return c.JSON(http.StatusOK, entriesParsed)
 }

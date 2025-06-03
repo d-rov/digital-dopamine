@@ -1,11 +1,7 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
 type Classification struct {
-	gorm.Model
+	ID       uint   `json:"id" gorm:"primaryKey"`
 	URL      string `json:"url" gorm:"unique"`
 	Category string `json:"category"`
 }
