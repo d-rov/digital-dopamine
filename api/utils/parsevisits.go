@@ -23,9 +23,10 @@ type SiteStats struct {
 	URL           string  `json:"url"`
 	Visits        [][]int `json:"visits"`
 	TotalDuration int     `json:"totalDuration"`
+	Category      string  `json:"category"`
 }
 
-func ParseVisits(entries []models.LogEntry) []*SiteStats {
+func ParseVisits(entries []models.LogEntry, catMap map[string]string) []*SiteStats {
 	// take entries
 	// create a list of objects
 	// one object per site
@@ -44,6 +45,15 @@ func ParseVisits(entries []models.LogEntry) []*SiteStats {
 			newSite.URL = entry.URL
 			newSite.Visits = append(newSite.Visits, visit)
 			newSite.TotalDuration += entry.Duration
+			// want to check for site type in the categories and then add that to the newSite
+			value, exists := catMap[entry.URL]
+			if exists {
+				newSite.Category = value
+			} else {
+				// TODO:
+				// temporary way to handle an unclassified site
+				newSite.Category = "unknown"
+			}
 			entriesParsedMap[newSite.URL] = newSite
 		}
 	}

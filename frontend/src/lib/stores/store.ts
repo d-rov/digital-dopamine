@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+import { readable } from "svelte/store";
 import type { Site } from "../types/site";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -6,9 +6,8 @@ console.log(baseUrl);
 
 const visits: Site[] = [];
 
-export const siteVisits = writable(visits, (set) => {
+export const siteVisits = readable(visits, (set) => {
   // make fetch to /api/summary?period={day|week|month}
-
   async function fetchData() {
     try {
       const res = await fetch(`${baseUrl}/summary`);
@@ -21,5 +20,10 @@ export const siteVisits = writable(visits, (set) => {
   }
 
   fetchData();
-  return;
+
+  const interval = setInterval(() => {
+    fetchData();
+  }, 10000);
+
+  return () => clearInterval(interval);
 });

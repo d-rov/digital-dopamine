@@ -20,6 +20,7 @@ func DataSummary(c echo.Context) error {
 	// [day|week|month]
 	period := c.QueryParam("period")
 	var entries []models.LogEntry
+	var categories []models.Classification
 	var periodParam int64
 	switch period {
 	case "day":
@@ -32,12 +33,21 @@ func DataSummary(c echo.Context) error {
 		periodParam = startOfDay
 		log.Println("DataSummary, switch default case: unsupported period")
 	}
-	result := database.DB.Where("timestamp >= ?", periodParam).Find(&entries)
-	if result.Error != nil {
-		log.Println("DataSummary, Error: Database error")
+	resultEntries := database.DB.Where("timestamp >= ?", periodParam).Find(&entries)
+	if resultEntries.Error != nil {
+		log.Println("DataSummary, Error: ", resultEntries.Error)
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Database error"})
 	}
+
+	resultCategories := database.DB.Find(&categories)
+	if resultCategories.Error != nil {
+		log.Println("DataSummary, Error: ", resultCategories.Error)
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Database error"})
+	}
+
 	log.Println("DataSummary, Entries: ", len(entries))
-	entriesParsed := utils.ParseVisits(entries)
+	log.Println("DataSummary, Categories: ", categories)
+	categoryMap := utils.GetCategoryMap(categories)
+	entriesParsed := utils.ParseVisits(entries, categoryMap)
 	return c.JSON(http.StatusOK, entriesParsed)
 }

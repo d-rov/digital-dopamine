@@ -43,6 +43,7 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
       const tracker = trackerMap.get(currUrl);
       if (!tracker) return "TimeTracker object not found";
       const tabData = tracker.stop();
+      console.log("tabData: ", tabData.url, tabData.duration); // TESTING
       const retVal = await postLogEntry(tabData);
       // lets do a little error checking with retVal
       console.log("retVal: ", retVal); // TESTING
