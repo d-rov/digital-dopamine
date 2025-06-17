@@ -12,7 +12,7 @@ export const siteVisits = readable(visits, (set) => {
     try {
       const res = await fetch(`${baseUrl}/summary`);
       const json: Site[] = await res.json();
-      console.log("json: ", json);
+      // console.log("json: ", json); // TESTING
       set(json);
     } catch (error) {
       console.error("Error fetching data: ", error);
@@ -23,7 +23,7 @@ export const siteVisits = readable(visits, (set) => {
 
   const interval = setInterval(() => {
     fetchData();
-  }, 10000);
+  }, 10000); // don't need this frequent of update in production, purely for testing
 
   return () => clearInterval(interval);
 });
