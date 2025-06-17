@@ -1,5 +1,6 @@
 export interface Hour {
-  sites: string[];
+  productiveSites: string[];
+  distractionSites: string[];
   productiveDuration: number;
   distractionDuration: number;
 }
