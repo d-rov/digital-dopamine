@@ -28,7 +28,7 @@
 
   let { hoursData }: { hoursData: Map<number, Hour> } = $props();
 
-  // console.log("hours data: ", hoursData);
+  console.log("hours data: ", hoursData);
 
   const productiveData: number[] = [];
   const distractionData: number[] = [];
@@ -36,15 +36,15 @@
   // fence post the 24th hour first because it's at the top of the 'clock'
   let hour = hoursData.get(24);
   if (hour) {
-    productiveData.push(hour.productiveDuration);
-    distractionData.push(hour.distractionDuration);
+    productiveData.push(hour.productiveDuration / MINUTES_CONVERSION);
+    distractionData.push(hour.distractionDuration / MINUTES_CONVERSION);
   }
   // going from 1 -> 24 to because it maps to the hours better
   for (let i = 1; i < 24; i++) {
     hour = hoursData.get(i);
     if (hour) {
-      productiveData.push(hour.productiveDuration);
-      distractionData.push(hour.distractionDuration);
+      productiveData.push(hour.productiveDuration / MINUTES_CONVERSION);
+      distractionData.push(hour.distractionDuration / MINUTES_CONVERSION);
     }
   }
 
@@ -107,11 +107,6 @@
         scales: {
           r: {
             beginAtZero: true,
-            max: 60,
-            min: 0,
-            ticks: {
-              stepSize: 20,
-            },
           },
         },
       },

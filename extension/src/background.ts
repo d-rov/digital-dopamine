@@ -5,7 +5,10 @@ import {
 } from "./api.js";
 import { TimeTracker } from "./utils/timeTracker.js";
 
-// TODO: need to ignore certain URLs such as localhost, newtab, chrome://
+// TODO: if when switching between tabs and base url is same for previous and new sites then time tracking should continue
+// TODO: setup updating url/tab instead of just clicking onto the tab
+// TODO: setup stop time tracker for closing tab
+// TODO: setup functionality for exiting browsing
 
 let currUrl: string = "";
 const trackerMap = new Map<string, TimeTracker>();
@@ -45,7 +48,7 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
       const tabData = tracker.stop();
       console.log("tabData: ", tabData.url, tabData.duration); // TESTING
       const retVal = await postLogEntry(tabData);
-      // lets do a little error checking with retVal
+      // TODO: add error checking for retVal
       console.log("retVal: ", retVal); // TESTING
     }
     currUrl = hostUrl;
