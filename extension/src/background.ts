@@ -5,22 +5,44 @@ import {
 } from "./api.js";
 import { TimeTracker } from "./utils/timeTracker.js";
 
-/**
- * TODO: code in my listeners has a lot of overlap and similarity, fine for now
- *       - extract is out into some helper functions, might add some complexity
- */
-
-/**
- * I don't think it's necessary to add a listener for a removed/closed tab as a closing window should cover last tab being closed
- * and onActivated should cover a tab being closed as the next tab should trigger the event
- */
-
 let currUrl: string = "";
 const trackerMap = new Map<string, TimeTracker>();
+
+async function categorizeSite(url: string, tabId: number) {
+  const siteCategory = await getSiteClassification(url);
+  if (siteCategory.status === 404) {
+    chrome.scripting.executeScript({
+      target: { tabId },
+      files: ["banner.js"],
+    });
+  }
+}
+
+function stopTimeTracker(currUrl: string) {
+  const tracker = trackerMap.get(currUrl);
+  if (!tracker) return "TimeTracker object not found";
+  const tabData = tracker.stop();
+  postLogEntry(tabData);
+}
+
+function startTimeTracker(url: string, keepRunning: boolean) {
+  if (trackerMap.has(url)) {
+    const tracker = trackerMap.get(url);
+    if (!tracker) return "TimeTracker object not found";
+    if (!keepRunning) {
+      tracker.start(url);
+    }
+  } else if (!trackerMap.has(url)) {
+    const tracker = new TimeTracker();
+    tracker.start(url);
+    trackerMap.set(url, tracker);
+  }
+}
 
 // onActivated needs to stop time tracking for previous tabId if there is one
 // creates a new time tracker if one did not previously exist and then (re)start time tracking for new active tab
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
+  console.log("tab activated");
   try {
     const tab = await chrome.tabs.get(activeInfo.tabId);
     if (!tab || !tab.url || !tab.id) return;
@@ -29,61 +51,27 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
       tab.url.includes("localhost") ||
       tab.url.includes("127.0.0.1")
     ) {
+      if (currUrl !== "") stopTimeTracker(currUrl);
       return;
     }
-
-    // console.log(tab.url);
 
     const parsed = new URL(tab.url);
     const hostUrl = parsed.host;
 
-    // console.log("host url: ", hostUrl); // TESTING
-
-    const siteCategory = await getSiteClassification(hostUrl);
-    console.log(siteCategory.status); // TESTING
-    if (siteCategory.status === 404) {
-      console.log("site not categorized in database");
-      chrome.scripting.executeScript({
-        target: { tabId: activeInfo.tabId },
-        files: ["banner.js"],
-      });
-    }
-
+    categorizeSite(hostUrl, activeInfo.tabId);
     if (currUrl != "" && currUrl !== hostUrl) {
-      const tracker = trackerMap.get(currUrl);
-      if (!tracker) return "TimeTracker object not found";
-      const tabData = tracker.stop();
-      console.log("tabData: ", tabData.url, tabData.duration); // TESTING
-      const retVal = await postLogEntry(tabData);
-      // TODO: add error checking for retVal
-      // console.log("retVal: ", retVal); // TESTING
+      stopTimeTracker(currUrl);
     }
-
-    let keepRunning = false;
-    if (currUrl === hostUrl) {
-      // console.log("keep running");
-      keepRunning = true;
-    }
+    let keepRunning = currUrl === hostUrl;
     currUrl = hostUrl;
-
-    if (trackerMap.has(hostUrl)) {
-      const tracker = trackerMap.get(hostUrl);
-      if (!tracker) return "TimeTracker object not found";
-      if (!keepRunning) {
-        // console.log("starting/restarting time tracker");
-        tracker.start(hostUrl);
-      }
-    } else if (!trackerMap.has(hostUrl)) {
-      const timeTracker = new TimeTracker();
-      timeTracker.start(hostUrl);
-      trackerMap.set(hostUrl, timeTracker);
-    }
+    startTimeTracker(hostUrl, keepRunning);
   } catch (err) {
     console.error("Error in onActivated listener: ", err);
   }
 });
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  console.log("tab updated: ", tab.url);
   try {
     if (!tab || !tab.url || !tab.id) return;
     if (
@@ -91,57 +79,25 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       tab.url.includes("localhost") ||
       tab.url.includes("127.0.0.1")
     ) {
+      if (currUrl !== "") stopTimeTracker(currUrl);
       return;
     }
 
     const parsed = new URL(tab.url);
     const hostUrl = parsed.host;
 
-    const siteCategory = await getSiteClassification(hostUrl);
-    console.log(siteCategory.status); // TESTING
-    if (siteCategory.status === 404) {
-      console.log("site not categorized in database");
-      chrome.scripting.executeScript({
-        target: { tabId },
-        files: ["banner.js"],
-      });
-    }
-
+    categorizeSite(hostUrl, tabId);
     if (currUrl != "" && currUrl !== hostUrl) {
-      const tracker = trackerMap.get(currUrl);
-      if (!tracker) return "TimeTracker object not found";
-      const tabData = tracker.stop();
-      console.log("tabData: ", tabData.url, tabData.duration); // TESTING
-      const retVal = await postLogEntry(tabData);
-      // TODO: add error checking for retVal
-      // console.log("retVal: ", retVal); // TESTING
+      stopTimeTracker(currUrl);
     }
-
-    let keepRunning = false;
-    if (currUrl === hostUrl) {
-      // console.log("keep running");
-      keepRunning = true;
-    }
+    let keepRunning = currUrl === hostUrl;
     currUrl = hostUrl;
-
-    if (trackerMap.has(hostUrl)) {
-      const tracker = trackerMap.get(hostUrl);
-      if (!tracker) return "TimeTracker object not found";
-      if (!keepRunning) {
-        // console.log("starting/restarting time tracker");
-        tracker.start(hostUrl);
-      }
-    } else if (!trackerMap.has(hostUrl)) {
-      const timeTracker = new TimeTracker();
-      timeTracker.start(hostUrl);
-      trackerMap.set(hostUrl, timeTracker);
-    }
+    startTimeTracker(hostUrl, keepRunning);
   } catch (err) {
     console.log("Error in onUpdated listener: ", err);
   }
 });
 
-// covers case where a link opens a new tab, etc.
 chrome.tabs.onCreated.addListener(async (tab) => {
   console.log("tab created"); // TESTING
   try {
@@ -150,45 +106,13 @@ chrome.tabs.onCreated.addListener(async (tab) => {
     const parsed = new URL(tab.url);
     const hostUrl = parsed.host;
 
-    const siteCategory = await getSiteClassification(hostUrl);
-    console.log(siteCategory.status); // TESTING
-    if (siteCategory.status === 404) {
-      console.log("site not categorized in database");
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ["banner.js"],
-      });
-    }
-
+    categorizeSite(hostUrl, tab.id);
     if (currUrl != "" && currUrl !== hostUrl) {
-      const tracker = trackerMap.get(currUrl);
-      if (!tracker) return "TimeTracker object not found";
-      const tabData = tracker.stop();
-      console.log("tabData: ", tabData.url, tabData.duration); // TESTING
-      const retVal = await postLogEntry(tabData);
-      // TODO: add error checking for retVal
-      // console.log("retVal: ", retVal); // TESTING
+      stopTimeTracker(currUrl);
     }
-
-    let keepRunning = false;
-    if (currUrl === hostUrl) {
-      // console.log("keep running");
-      keepRunning = true;
-    }
+    let keepRunning = currUrl === hostUrl;
     currUrl = hostUrl;
-
-    if (trackerMap.has(hostUrl)) {
-      const tracker = trackerMap.get(hostUrl);
-      if (!tracker) return "TimeTracker object not found";
-      if (!keepRunning) {
-        // console.log("starting/restarting time tracker");
-        tracker.start(hostUrl);
-      }
-    } else if (!trackerMap.has(hostUrl)) {
-      const timeTracker = new TimeTracker();
-      timeTracker.start(hostUrl);
-      trackerMap.set(hostUrl, timeTracker);
-    }
+    startTimeTracker(hostUrl, keepRunning);
   } catch (err) {
     console.log("Error in onCreated listener: ", err);
   }
@@ -196,10 +120,7 @@ chrome.tabs.onCreated.addListener(async (tab) => {
 
 chrome.windows.onFocusChanged.addListener((windowId) => {
   console.log("window focus changed: ", windowId); // TESTING
-  const tracker = trackerMap.get(currUrl);
-  if (!tracker) return "TimeTracker object not found";
-  const tabData = tracker.stop();
-  postLogEntry(tabData);
+  stopTimeTracker(currUrl);
 
   if (windowId !== chrome.windows.WINDOW_ID_NONE) {
     console.log("chrome not currently in focus");
@@ -212,17 +133,10 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
       const parsed = new URL(tab.url);
       const hostUrl = parsed.host;
 
+      let keepRunning = currUrl === hostUrl;
       currUrl = hostUrl;
 
-      if (trackerMap.has(hostUrl)) {
-        const tracker = trackerMap.get(hostUrl);
-        if (!tracker) return "TimeTracker object not found";
-        tracker.start(hostUrl);
-      } else if (!trackerMap.has(hostUrl)) {
-        const timeTracker = new TimeTracker();
-        timeTracker.start(hostUrl);
-        trackerMap.set(hostUrl, timeTracker);
-      }
+      startTimeTracker(hostUrl, keepRunning);
     });
   }
 });
@@ -232,10 +146,7 @@ chrome.windows.onRemoved.addListener((windowId) => {
   // browser window is closing so just stop the time tracker and push to db
   chrome.windows.getLastFocused((lastFocusedWindow) => {
     if (windowId === lastFocusedWindow.id) {
-      const tracker = trackerMap.get(currUrl);
-      if (!tracker) return "TimeTracker object not found";
-      const tabData = tracker.stop();
-      postLogEntry(tabData);
+      stopTimeTracker(currUrl);
     }
     console.log("closed non-focused window");
   });
