@@ -108,6 +108,10 @@
         scales: {
           r: {
             beginAtZero: true,
+            ticks: {
+              color: "magenta",
+              backdropColor: "rgba(255, 255, 255, 0)",
+            },
           },
         },
       },

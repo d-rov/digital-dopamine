@@ -12,7 +12,7 @@ export const dailySites = readable(visits, (set) => {
     try {
       const res = await fetch(`${baseUrl}/summary`);
       const json: Site[] = await res.json();
-      // console.log("json: ", json); // TESTING
+      console.log("json: ", json); // TESTING
       set(json);
     } catch (error) {
       console.error("Error fetching data: ", error);

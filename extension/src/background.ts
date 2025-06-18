@@ -22,6 +22,7 @@ function stopTimeTracker(currUrl: string) {
   const tracker = trackerMap.get(currUrl);
   if (!tracker) return "TimeTracker object not found";
   const tabData = tracker.stop();
+  console.log("tabData: ", tabData); // TESTING
   postLogEntry(tabData);
 }
 
@@ -30,10 +31,12 @@ function startTimeTracker(url: string, keepRunning: boolean) {
     const tracker = trackerMap.get(url);
     if (!tracker) return "TimeTracker object not found";
     if (!keepRunning) {
+      console.log("starting tracker"); // TESTING
       tracker.start(url);
     }
   } else if (!trackerMap.has(url)) {
     const tracker = new TimeTracker();
+    console.log("starting new tracker"); // TESTING
     tracker.start(url);
     trackerMap.set(url, tracker);
   }
@@ -60,10 +63,12 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
 
     categorizeSite(hostUrl, activeInfo.tabId);
     if (currUrl != "" && currUrl !== hostUrl) {
+      console.log("activated stop"); // TESTING
       stopTimeTracker(currUrl);
     }
     let keepRunning = currUrl === hostUrl;
     currUrl = hostUrl;
+    console.log("activated start"); // TESTING
     startTimeTracker(hostUrl, keepRunning);
   } catch (err) {
     console.error("Error in onActivated listener: ", err);
@@ -88,10 +93,12 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
     categorizeSite(hostUrl, tabId);
     if (currUrl != "" && currUrl !== hostUrl) {
+      console.log("updated stop"); // TESTING
       stopTimeTracker(currUrl);
     }
     let keepRunning = currUrl === hostUrl;
     currUrl = hostUrl;
+    console.log("updated start"); // TESTING
     startTimeTracker(hostUrl, keepRunning);
   } catch (err) {
     console.log("Error in onUpdated listener: ", err);
@@ -108,10 +115,12 @@ chrome.tabs.onCreated.addListener(async (tab) => {
 
     categorizeSite(hostUrl, tab.id);
     if (currUrl != "" && currUrl !== hostUrl) {
+      console.log("created stop"); // TESTING
       stopTimeTracker(currUrl);
     }
     let keepRunning = currUrl === hostUrl;
     currUrl = hostUrl;
+    console.log("created start"); // TESTING
     startTimeTracker(hostUrl, keepRunning);
   } catch (err) {
     console.log("Error in onCreated listener: ", err);
@@ -119,8 +128,9 @@ chrome.tabs.onCreated.addListener(async (tab) => {
 });
 
 chrome.windows.onFocusChanged.addListener((windowId) => {
-  console.log("window focus changed: ", windowId); // TESTING
+  console.log("focus change stop"); // TESTING
   stopTimeTracker(currUrl);
+  currUrl = "";
 
   if (windowId !== chrome.windows.WINDOW_ID_NONE) {
     console.log("chrome not currently in focus");
@@ -129,6 +139,14 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
     chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
       const tab = tabs[0];
       if (!tab || !tab.url || !tab.id) return;
+      if (
+        tab.url.startsWith("chrome") ||
+        tab.url.includes("localhost") ||
+        tab.url.includes("127.0.0.1")
+      ) {
+        if (currUrl !== "") stopTimeTracker(currUrl);
+        return;
+      }
 
       const parsed = new URL(tab.url);
       const hostUrl = parsed.host;
@@ -136,6 +154,7 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
       let keepRunning = currUrl === hostUrl;
       currUrl = hostUrl;
 
+      console.log("focus change start"); // TESTING
       startTimeTracker(hostUrl, keepRunning);
     });
   }
