@@ -8,6 +8,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// TODO: remove gorm and just use raw sql
+
 var DB *gorm.DB
 
 func InitDB() {

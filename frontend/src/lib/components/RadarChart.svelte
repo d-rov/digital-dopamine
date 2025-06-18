@@ -6,9 +6,9 @@
     PointElement,
     LineElement,
     Filler,
+    Legend,
   } from "chart.js";
   import { onMount } from "svelte";
-
   import type { Hour } from "../types/hour";
 
   Chart.register(
@@ -17,6 +17,7 @@
     PointElement,
     LineElement,
     Filler,
+    Legend,
   );
 
   const MINUTES_CONVERSION: number = 60000;
@@ -26,22 +27,22 @@
 
   let ctx = document.getElementById("dataChart") as HTMLCanvasElement;
 
-  let { hoursData }: { hoursData: Map<number, Hour> } = $props();
+  let { data }: { data: Map<number, Hour> } = $props();
 
-  console.log("hours data: ", hoursData);
+  // console.log("hours data: ", hoursData); // TESTING
 
   const productiveData: number[] = [];
   const distractionData: number[] = [];
 
   // fence post the 24th hour first because it's at the top of the 'clock'
-  let hour = hoursData.get(24);
+  let hour = data.get(24);
   if (hour) {
     productiveData.push(hour.productiveDuration / MINUTES_CONVERSION);
     distractionData.push(hour.distractionDuration / MINUTES_CONVERSION);
   }
   // going from 1 -> 24 to because it maps to the hours better
   for (let i = 1; i < 24; i++) {
-    hour = hoursData.get(i);
+    hour = data.get(i);
     if (hour) {
       productiveData.push(hour.productiveDuration / MINUTES_CONVERSION);
       distractionData.push(hour.distractionDuration / MINUTES_CONVERSION);
@@ -115,5 +116,5 @@
 </script>
 
 <div>
-  <canvas id="dataChart" width="600" height="600" bind:this={ctx}></canvas>
+  <canvas id="dataChart" width="400" height="400" bind:this={ctx}></canvas>
 </div>

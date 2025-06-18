@@ -6,8 +6,8 @@ console.log(baseUrl);
 
 const visits: Site[] = [];
 
-export const siteVisits = readable(visits, (set) => {
-  // make fetch to /api/summary?period={day|week|month}
+export const dailySites = readable(visits, (set) => {
+  // make fetch to /api/summary?period=day
   async function fetchData() {
     try {
       const res = await fetch(`${baseUrl}/summary`);
@@ -26,4 +26,12 @@ export const siteVisits = readable(visits, (set) => {
   }, 10000); // don't need this frequent of update in production, purely for testing
 
   return () => clearInterval(interval);
+});
+
+export const weeklySites = readable(visits, (set) => {
+  // make fetch to /api/summary?period=week
+});
+
+export const monthlySites = readable(visits, (set) => {
+  // make fetch to /api/summary?period=month
 });

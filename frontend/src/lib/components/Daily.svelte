@@ -2,8 +2,10 @@
   import type { Hour } from "../types/hour";
   import type { Site } from "../types/site";
   import RadarChart from "./RadarChart.svelte";
+  import BarChart from "./BarChart.svelte";
 
   let { data }: { data: Site[] } = $props();
+  let chartType = $state("bar");
 
   // TODO: add support for other charts for different visualizations
 
@@ -33,6 +35,10 @@
         hour.productiveSites.push(site.url);
       }
     }
+  }
+
+  function handleClick(type: string) {
+    chartType = type;
   }
 
   // want to collect each block of visits per hour so i can display the daily trends
@@ -125,4 +131,11 @@
   }); // end of effect
 </script>
 
-<RadarChart hoursData={dataMap} />
+<button onclick={() => handleClick("bar")}>Bar</button>
+<button onclick={() => handleClick("radar")}>Radar</button>
+
+{#if chartType === "bar"}
+  <BarChart data={dataMap} />
+{:else if chartType === "radar"}
+  <RadarChart data={dataMap} />
+{/if}
